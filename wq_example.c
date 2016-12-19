@@ -48,18 +48,19 @@ static int __init init_wqdemo(void)
 {
 
 	init_waitqueue_head(&wqdemo_wq);
-	wqdemo_thread = kthread_run(wqdemo_thread_fn, NULL, "wqdemod");
-	/*
-	 * Take an extra reference on @wqdemo_thread so that while checking
-	 * if the kernel thread has exited during module exit,  the @task_struct
-	 * is not destroyed.
-	 */
-	get_task_struct(wqdemo_thread);
+	wqdemo_thread = kthread_create(wqdemo_thread_fn, NULL, "wqdemod");
 	if (IS_ERR(wqdemo_thread)) {
 		pr_crit("Failed to start wqdemod kernel "
 				"thread (error %ld).",
 				-PTR_ERR(wqdemo_thread));
 	} else {
+		/*
+		 * Take an extra reference on @wqdemo_thread so that while
+		 * checking if the kernel thread has exited during module
+		 * exit,  the @task_struct is not destroyed.
+		 */
+		get_task_struct(wqdemo_thread);
+		wake_up_process(wqdemo_thread);
 		/**
 		 * The wait_event and wait_event_interruptible macros put the
 		 * calling process to sleep on a wait queue until a given
