@@ -1,4 +1,4 @@
-# Linux waitqueue/kernel thread demo (KERNEL_VERSION(4,4,0)
+# Linux waitqueue/kernel thread demo (KERNEL_VERSION(4,4,0))
 
 Kernel threads are independent context which only runs in kernel mode.  Please
 NOTE the flags @CLONE_VM and @CLONE_UNTRACED.
